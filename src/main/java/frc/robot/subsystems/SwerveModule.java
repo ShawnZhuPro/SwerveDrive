@@ -10,6 +10,7 @@ import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ModuleConstants;
 
@@ -75,6 +76,49 @@ public class SwerveModule extends SubsystemBase {
     // This setup is suitable for systems with circular behavior, where angles wrap around like a circle 
     turningPidController.enableContinuousInput(-Math.PI, Math.PI);
 
+    resetEncoders();
+
+  }
+
+  // Helper methods to get encoder values
+  
+  public double getDrivePosition(){
+    return driveEncoder.getPosition();
+  }
+
+  public double getTurningPosition(){
+    return turningEncoder.getPosition();
+  }
+
+  public double getDriveVelocity(){
+    return driveEncoder.getVelocity();
+  }
+
+  public double getTurningVelocity(){
+    return turningEncoder.getVelocity();
+  }
+
+  public double getAbsoluteEncoderRad(){
+    // absoluteEncoder's voltage reading / voltage supply 
+    // This gives us the % of a full rotation
+    double angle = absoluteEncoder.getVoltage() / RobotController.getVoltage5V();
+    // Convert to radians
+    angle *= 2.0 * Math.PI;
+    // Actual angle by subtracting the offset
+    angle -= absoluteEncoderOffsetRad;
+    // if the absoluteEncoder is reversed, we multiply the angle by -1
+    if(absoluteEncoderReversed){
+        return angle * -1.0;
+    }return angle * 1.0;
+  }
+
+  // Encoders in the motors lose their readings everytime the robot starts
+  // This function gives values of the absoluteEncoders (which always knows their location) to the motor encoders
+  public void resetEncoders(){
+    // Resets driveEncoder motor to 0 
+    driveEncoder.setPosition(0);
+    // Resets turningEncoder to the absoluteEncoder in radians
+    turningEncoder.setPosition(getAbsoluteEncoderRad());
   }
 
   @Override
