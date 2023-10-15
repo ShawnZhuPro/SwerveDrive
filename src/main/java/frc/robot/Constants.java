@@ -28,4 +28,9 @@ public final class Constants {
     public static final double kPTurning = 0;
   }
 
+  // Change these constants to ones measured for your robot
+  public static final class DriveConstants {
+    public static final double kPhysicalMaxSpeedMetersPerSecond = 0;
+  }
+
 }

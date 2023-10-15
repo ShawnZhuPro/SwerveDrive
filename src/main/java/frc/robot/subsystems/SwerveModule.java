@@ -9,9 +9,13 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 
 public class SwerveModule extends SubsystemBase {
@@ -27,7 +31,7 @@ public class SwerveModule extends SubsystemBase {
     private final RelativeEncoder turningEncoder;
 
     // PID controller for the motor that controls the angle
-    private final PIDController turningPidController;
+    private final PIDController turningPIDController;
 
     /* Absolute encoder connected to the turning motor (in between the 2 big neo motors)
      * This is necessary so the robot always knows where the robot is facing
@@ -71,11 +75,12 @@ public class SwerveModule extends SubsystemBase {
 
     // Initialize turningPidController to control the system's angle
     // As of now, we'll see if the proportional term alone works
-    turningPidController = new PIDController(ModuleConstants.kPTurning, 0, 0);
+    turningPIDController = new PIDController(ModuleConstants.kPTurning, 0, 0);
     // Create a PID controller for controlling a system with continuous angles from -π to π radians
     // This setup is suitable for systems with circular behavior, where angles wrap around like a circle 
-    turningPidController.enableContinuousInput(-Math.PI, Math.PI);
+    turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
+    // We call this so the turningEncoder's reading will be aligned with the wheel's actual angle (refer to resetEncoders method down below)
     resetEncoders();
 
   }
@@ -121,8 +126,35 @@ public class SwerveModule extends SubsystemBase {
     turningEncoder.setPosition(getAbsoluteEncoderRad());
   }
 
-  @Override
-  public void periodic() {
-    //
+  // WPI libraries need this information in a SwerveModuleState, so let's create a method to do so
+  public SwerveModuleState getState(){
+      // Create a new SwerveModuleState with the drive velocity and turning position
+      return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurningPosition()));
+  }
+
+  // Function that actuates (controls and adjusts the orientation) the swerve module
+  public void setDesiredState(SwerveModuleState state){
+    /* When using joysticks to drive the robot, the WPI library resets the module angles to zero as soon as the controls are released, causing unexpected behavior
+     * To fix this, we will stop the motors to prevent unnecessary movement if the swerve module has no substantial driving velocity in the new requested state
+     * If the velocity is very close to zero, it means we are not actively driving the module, so we can reset the motors */ 
+    if (Math.abs(state.speedMetersPerSecond) < 0.001) {
+        driveMotor.set(0);
+        turningMotor.set(0);
+        return;  // Exits the setDesiredState function
+    }
+
+    // Optimizes the angle setpoint so we don't have to move more than 90 degrees
+    state = SwerveModuleState.optimize(state, getState().angle);
+
+    // Sets the driveMotor
+    // Scales down the velocity using the robot's max speed into a power output rather than a speed
+    driveMotor.set(state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
+
+    // Sets the turningMotor
+    // Calculates the output for the current position (1st argument) and the angle setpoint (2nd argument)
+    turningMotor.set(turningPIDController.calculate(getTurningPosition(), state.angle.getRadians()));
+
+    // Debug info
+    SmartDashboard.putString("Swerve[" + absoluteEncoder.getChannel() + "] state", state.toString());
   }
 }
