@@ -14,11 +14,10 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 
-public class SwerveModule extends SubsystemBase {
+public class SwerveModule {
     // **IMPORTANT** This is only for ONE SparkMax swerve module
     // To install these types (like the CAN) go here: https://docs.revrobotics.com/sparkmax/software-resources/spark-max-api-information
 
@@ -36,7 +35,7 @@ public class SwerveModule extends SubsystemBase {
     /* Absolute encoder connected to the turning motor (in between the 2 big neo motors)
      * This is necessary so the robot always knows where the robot is facing
      * We use the AnalogInput class because the absolute encoders are connected to the analog in ports on the RoboRIO 
-     * Make sure to import the one from WPI, not REV*/ 
+     * Make sure to import the one from WPI, not REV */ 
     private final AnalogInput absoluteEncoder;
     // Stores if the absoluteEncoder is reversed
     private final boolean absoluteEncoderReversed;

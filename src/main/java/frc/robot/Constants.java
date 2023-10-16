@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.util.Units;
-
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -31,6 +29,41 @@ public final class Constants {
   // Change these constants to ones measured for your robot
   public static final class DriveConstants {
     public static final double kPhysicalMaxSpeedMetersPerSecond = 0;
+
+    public static final int kFrontLeftDriveMotorPort = 0;
+    public static final int kBackLeftDriveMotorPort = 0;
+    public static final int kFrontRightDriveMotorPort = 0;
+    public static final int kBackRightDriveMotorPort = 0;
+
+    public static final int kFrontLeftTurningMotorPort = 0;
+    public static final int kBackLeftTurningMotorPort = 0;
+    public static final int kFrontRightTurningMotorPort = 0;
+    public static final int kBackRightTurningMotorPort = 0;
+
+    public static final boolean kFrontLeftTurningEncoderReversed = true;
+    public static final boolean kBackLeftTurningEncoderReversed = true;
+    public static final boolean kFrontRightTurningEncoderReversed = true;
+    public static final boolean kBackRightTurningEncoderReversed = true;
+
+    public static final boolean kFrontLeftDriveEncoderReversed = true;
+    public static final boolean kBackLeftDriveEncoderReversed = true;
+    public static final boolean kFrontRightDriveEncoderReversed = true;
+    public static final boolean kBackRightDriveEncoderReversed = true;
+
+    public static final int kFrontLeftDriveAbsoluteEncoderPort = 0;
+    public static final int kBackLeftDriveAbsoluteEncoderPort = 0;
+    public static final int kFrontRightDriveAbsoluteEncoderPort = 0;
+    public static final int kBackRightDriveAbsoluteEncoderPort = 0;
+
+    public static final boolean kFrontLeftDriveAbsoluteEncoderReversed = true;
+    public static final boolean kBackLeftDriveAbsoluteEncoderReversed = true;
+    public static final boolean kFrontRightDriveAbsoluteEncoderReversed = true;
+    public static final boolean kBackRightDriveAbsoluteEncoderReversed = true;
+
+    public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = 0;
+    public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 0;
+    public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 0;
+    public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 0;
   }
 
 }
