@@ -28,7 +28,7 @@ public final class Constants {
 
   // Change these constants to ones measured for your robot
   public static final class DriveConstants {
-    public static final double kPhysicalMaxSpeedMetersPerSecond = 0;
+    public static final double kPhysicalMaxSpeedMetersPerSecond = 0.0;
 
     public static final int kFrontLeftDriveMotorPort = 0;
     public static final int kBackLeftDriveMotorPort = 0;

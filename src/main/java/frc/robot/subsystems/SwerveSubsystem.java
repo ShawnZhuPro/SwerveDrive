@@ -8,6 +8,8 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
@@ -78,14 +80,36 @@ public class SwerveSubsystem extends SubsystemBase {
     return Math.IEEEremainder(gyro.getAngle(), 360);
   }
 
-  // WPIlib wants the heading value in rotation 2D (a data structure that represents a 2D rotation angle)
+  // WPIlib wants the heading (angle) value in rotation 2D (a data structure that represents a 2D rotation angle)
   public Rotation2d getRotation2d() {
     return Rotation2d.fromDegrees(getHeading());
   }
 
   @Override
   public void periodic() {
-    // Displays robot heading value on SmartDashboard or ShuffleBoard
+    // Displays robot heading (angle) value on SmartDashboard or ShuffleBoard
     SmartDashboard.putNumber("Robot Heading", getHeading());
+  }
+
+  // Stops all swerve modules
+  public void stopModules() {
+    frontLeft.stop();
+    frontRight.stop();
+    backLeft.stop();
+    backRight.stop();
+  }
+
+  // Takes in an array of 4 module states and applies them all
+  public void setModuleStates(SwerveModuleState[] desiredStates) {
+    /* We have to desaturate (normalize) the wheel speeds to ensure they are within their maximum achievable limits
+     * If each wheel has a set speed of 5 meters per second, attempting to drive them over their limits can lead to uncontrollable steering
+     * To address this, we use the desaturateWheelSpeeds function to proportionately decrease the wheel speeds, so they are all achievable and under control */
+    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
+
+    // Applies desired states to individual swerve modules
+    frontLeft.setDesiredState(desiredStates[0]);
+    frontRight.setDesiredState(desiredStates[1]);
+    backLeft.setDesiredState(desiredStates[2]);
+    backRight.setDesiredState(desiredStates[3]);
   }
 }

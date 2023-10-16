@@ -137,8 +137,7 @@ public class SwerveModule {
      * To fix this, we will stop the motors to prevent unnecessary movement if the swerve module has no substantial driving velocity in the new requested state
      * If the velocity is very close to zero, it means we are not actively driving the module, so we can reset the motors */ 
     if (Math.abs(state.speedMetersPerSecond) < 0.001) {
-        driveMotor.set(0);
-        turningMotor.set(0);
+        stop();
         return;  // Exits the setDesiredState function
     }
 
@@ -155,5 +154,11 @@ public class SwerveModule {
 
     // Debug info
     SmartDashboard.putString("Swerve[" + absoluteEncoder.getChannel() + "] state", state.toString());
+  }
+
+  // Sets drive and angle speeds to 0 (stops the module)
+  public void stop(){
+    driveMotor.set(0);
+    turningMotor.set(0);
   }
 }
