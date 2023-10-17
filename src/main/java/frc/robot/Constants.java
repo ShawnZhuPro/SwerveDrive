@@ -16,6 +16,7 @@ public final class Constants {
 
   // Change these constants to ones measured for your robot
   public static final class ModuleConstants {
+
     // Diameter of the swerve module's wheels in meters
     public static final double kWheelDiameterMeters = 0;
 
@@ -41,6 +42,7 @@ public final class Constants {
 
   // Change these constants to ones measured for your robot
   public static final class DriveConstants {
+
     // Port numbers for drive motors on different swerve modules
     public static final int kFrontLeftDriveMotorPort = 0;
     public static final int kBackLeftDriveMotorPort = 0;
@@ -85,6 +87,20 @@ public final class Constants {
 
     // Maximum physical speed in meters per second
     public static final double kPhysicalMaxSpeedMetersPerSecond = 0;
+
+    public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 0;
+
+    public static double kTeleDriveMaxAccelerationUnitsPerSecond = 0;
+    public static double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 0;
+    public static double kTeleDriveMaxSpeedMetersPerSecond = kPhysicalMaxSpeedMetersPerSecond / 4;
+    public static double kTeleDriveMaxAngularSpeedRadiansPerSecond = kPhysicalMaxAngularSpeedRadiansPerSecond / 4;
+  }
+
+  // Constants for operator interface (OI) settings
+  public static final class OIConstants {
+
+    // A threshold value that defines a range where a small input is ignored to prevent unintended movement
+    public static final double kDeadband = 0.0;
   }
 
 }
