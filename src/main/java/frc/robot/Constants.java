@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.util.Units;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -42,6 +46,18 @@ public final class Constants {
 
   // Change these constants to ones measured for your robot
   public static final class DriveConstants {
+
+    // Distance between right and left wheels
+    public static final double kTrackWidth = Units.inchesToMeters(0);
+    // Distance between front and back wheels
+    public static final double kWheelBase = Units.inchesToMeters(0);
+    // This kinematics object specifies the locations of each swerve module on the robot
+    // This helps WPIlib construct a geometry of the robot's setup and perform calculations
+    public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
+            new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
+            new Translation2d(kWheelBase / 2, kTrackWidth / 2),
+            new Translation2d(-kWheelBase / 2, -kTrackWidth / 2),
+            new Translation2d(-kWheelBase / 2, kTrackWidth / 2));
 
     // Port numbers for drive motors on different swerve modules
     public static final int kFrontLeftDriveMotorPort = 0;
@@ -85,15 +101,19 @@ public final class Constants {
     public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 0;
     public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 0;
 
-    // Maximum physical speed in meters per second
+    // Maximum linear speed in meters per second
     public static final double kPhysicalMaxSpeedMetersPerSecond = 0;
-
+    // Maximum angular speed in radians per second
     public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 0;
 
-    public static double kTeleDriveMaxAccelerationUnitsPerSecond = 0;
-    public static double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 0;
-    public static double kTeleDriveMaxSpeedMetersPerSecond = kPhysicalMaxSpeedMetersPerSecond / 4;
-    public static double kTeleDriveMaxAngularSpeedRadiansPerSecond = kPhysicalMaxAngularSpeedRadiansPerSecond / 4;
+    // Maximum linear acceleration of the robot in units per second
+    public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 0;
+    // Maximum angular acceleration of the robot in units per second
+    public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 0;
+
+    // Scale factor 
+    public static final double kTeleDriveMaxSpeedMetersPerSecond = kPhysicalMaxSpeedMetersPerSecond / 4;
+    public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = kPhysicalMaxAngularSpeedRadiansPerSecond / 4;
   }
 
   // Constants for operator interface (OI) settings
@@ -101,6 +121,21 @@ public final class Constants {
 
     // A threshold value that defines a range where a small input is ignored to prevent unintended movement
     public static final double kDeadband = 0.0;
+
+    // Define the port number for the driver controller
+    public static final int kDriverControllerPort = 0;
+
+    // Assign the axis numbers for the driver controller
+    public static final int kDriverYAxis = 0;   // Y-axis for forward/backward movement
+    public static final int kDriverXAxis = 0;   // X-axis for left/right movement
+    public static final int kDriverRotAxis = 0; // Rotation axis for turning
+        
+    // Button for enabling/disabling field-oriented drive
+    public static final int kDriverFieldOrientedButtonIdx = 0;
+
+    // Button that zeroes the robot's heading
+    public static final int kDriverZeroHeading = 0;
+
   }
 
 }

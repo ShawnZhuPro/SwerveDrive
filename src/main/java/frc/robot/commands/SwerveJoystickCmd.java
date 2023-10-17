@@ -7,6 +7,8 @@ package frc.robot.commands;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -41,9 +43,7 @@ public class SwerveJoystickCmd extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -78,19 +78,36 @@ public class SwerveJoystickCmd extends CommandBase {
     xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
     ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
     turningSpeed = turningLimiter.calculate(turningSpeed) * DriveConstants.kTeleDriveMaxAngularSpeedRadiansPerSecond;
-  
 
+    // Converts speeds (after processing joystick values) to appropriate reference frames
+    ChassisSpeeds chassisSpeeds;
+    if(fieldOrientedFunction.get()) {
+      // Relative to field
+      // getRotation2d() is the robot's heading
+      chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
+    } else {
+      // Relative to robot
+      chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
+    }
+
+    // Generates an array of 4 swerve module states using chasisSpeeds
+    SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+
+    // Sets the module states to each wheel
+    swerveSubsystem.setModuleStates(moduleStates);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
+    // Stops the motors
+    swerveSubsystem.stopModules();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    // Command never ends unless interrupted
     return false;
   }
 }
