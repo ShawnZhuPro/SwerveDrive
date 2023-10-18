@@ -85,7 +85,6 @@ public class SwerveModule {
   }
 
   // Helper methods to get encoder values
-  
   public double getDrivePosition(){
     return driveEncoder.getPosition();
   }

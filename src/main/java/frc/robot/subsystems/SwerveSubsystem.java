@@ -9,6 +9,8 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -56,6 +58,10 @@ public class SwerveSubsystem extends SubsystemBase {
   // You must do import edu.wpi.first.wpilibj.SPI
   private AHRS gyro = new AHRS(SPI.Port.kMXP);
 
+  private SwerveModulePosition[] robotPosition;
+  // Creates an odometer that measures the coordinates of the robot on the field
+  private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, new Rotation2d(0), robotPosition);
+
   public SwerveSubsystem() {
     // Resets the gyroscope every time the robot boots up
     // This makes it so the direction the robot is facing currently will be the forward direction of the field
@@ -87,6 +93,16 @@ public class SwerveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    // Creates an array of SwerveModulePosition objects to represent module positions
+    SwerveModulePosition[] modulePositions = new SwerveModulePosition[]{
+      new SwerveModulePosition(frontLeft.getDrivePosition(), new Rotation2d(frontLeft.getTurningPosition())),
+      new SwerveModulePosition(frontRight.getDrivePosition(), new Rotation2d(frontRight.getTurningPosition())),
+      new SwerveModulePosition(backLeft.getDrivePosition(), new Rotation2d(backLeft.getTurningPosition())),
+      new SwerveModulePosition(backRight.getDrivePosition(), new Rotation2d(backRight.getTurningPosition()))
+  };
+    // Updates the odometer reading
+    odometer.update(getRotation2d(), modulePositions);
+  
     // Displays robot heading (angle) value on SmartDashboard or ShuffleBoard
     SmartDashboard.putNumber("Robot Heading", getHeading());
   }

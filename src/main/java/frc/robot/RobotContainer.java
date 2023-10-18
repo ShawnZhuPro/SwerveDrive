@@ -6,10 +6,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.SwerveJoystickCmd;
-import frc.robot.commands.ZeroHeading;
 import frc.robot.subsystems.SwerveSubsystem;
 
 /**
@@ -38,9 +38,11 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    // onTrue takes in a command as an argument, so we make a new ZeroHeading command to zero the heading
+    // the "() ->" expression is a shorthand way of making commands (AKA lambda expression)
+    InstantCommand zeroHeading = new InstantCommand(() -> swerveSubsystem.getHeading());
     // Resets the heading on a specific button click (specified in constants)
-    // onTrue takes in a command as an argument, so we made a new ZeroHeading command rather than call a method to zero heading
-    new JoystickButton(driverJoystick, OIConstants.kDriverZeroHeading).onTrue(new ZeroHeading(swerveSubsystem));
+    new JoystickButton(driverJoystick, OIConstants.kDriverZeroHeading).onTrue(zeroHeading);
   }
 
   public Command getAutonomousCommand() {
