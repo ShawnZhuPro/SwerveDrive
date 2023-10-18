@@ -58,6 +58,7 @@ public class SwerveSubsystem extends SubsystemBase {
   // You must do import edu.wpi.first.wpilibj.SPI
   private AHRS gyro = new AHRS(SPI.Port.kMXP);
 
+  // Initially creates a robotPosition with default values; we will update the position in the periodic function
   private SwerveModulePosition[] robotPosition;
   // Creates an odometer that measures the coordinates of the robot on the field
   private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, new Rotation2d(0), robotPosition);
@@ -94,14 +95,14 @@ public class SwerveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // Creates an array of SwerveModulePosition objects to represent module positions
-    SwerveModulePosition[] modulePositions = new SwerveModulePosition[]{
+    SwerveModulePosition[] robotPosition = new SwerveModulePosition[]{
       new SwerveModulePosition(frontLeft.getDrivePosition(), new Rotation2d(frontLeft.getTurningPosition())),
       new SwerveModulePosition(frontRight.getDrivePosition(), new Rotation2d(frontRight.getTurningPosition())),
       new SwerveModulePosition(backLeft.getDrivePosition(), new Rotation2d(backLeft.getTurningPosition())),
       new SwerveModulePosition(backRight.getDrivePosition(), new Rotation2d(backRight.getTurningPosition()))
   };
     // Updates the odometer reading
-    odometer.update(getRotation2d(), modulePositions);
+    odometer.update(getRotation2d(), robotPosition);
   
     // Displays robot heading (angle) value on SmartDashboard or ShuffleBoard
     SmartDashboard.putNumber("Robot Heading", getHeading());
