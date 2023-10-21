@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -92,7 +93,19 @@ public class SwerveSubsystem extends SubsystemBase {
     return Rotation2d.fromDegrees(getHeading());
   }
 
-  @Override
+  // Get's the location determined by the odometer
+  // Has the x, y, and theta coordinates of the robot
+  public Pose2d getPose() {
+    return odometer.getPoseMeters();
+  }
+
+  // Resets the odometer to a new location
+  public void resetOdometry(Pose2d pose){
+    odometer.resetPosition(getRotation2d(), robotPosition, pose);
+  }
+
+
+  @Override 
   public void periodic() {
     // Creates an array of SwerveModulePosition objects to represent module positions
     SwerveModulePosition[] robotPosition = new SwerveModulePosition[]{
@@ -106,6 +119,8 @@ public class SwerveSubsystem extends SubsystemBase {
   
     // Displays robot heading (angle) value on SmartDashboard or ShuffleBoard
     SmartDashboard.putNumber("Robot Heading", getHeading());
+    // Displays robot's coordinates
+    SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
   }
 
   // Stops all swerve modules

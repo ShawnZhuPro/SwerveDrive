@@ -116,6 +116,13 @@ public final class Constants {
     public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = kPhysicalMaxAngularSpeedRadiansPerSecond / 4;
   }
 
+  public static final class AutoConstants{
+    public static final double kMaxSpeedMetersPerSecond = DriveConstants.kPhysicalMaxSpeedMetersPerSecond / 4;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 0;  // Add code comment to determine value
+
+  }
+
+
   // Constants for operator interface (OI) settings
   public static final class OIConstants {
 
