@@ -60,3 +60,27 @@ The update() method takes in 2 parameters, not 5; the last parameter is an array
 Therefore, in order to get the robot's position, we have to create an array of the positions of each of the 4 swerve modules.
 Now we can successfully apply the arguments to the update() method so that the odometry coordinates are continuously updating.
 ```
+
+<br>
+
+### 3) Odometer reset position bug
+Wrong code:
+```java
+    public void resetOdometry(Pose2d pose) {
+        odometer.resetPosition(pose, getRotation2d());
+    }
+```
+Fixed code:
+```java
+  // Resets the odometer to a new location
+  public void resetOdometry(Pose2d pose){
+    odometer.resetPosition(getRotation2d(), robotPosition, pose);
+  }
+```
+Explanation:
+```txt
+The resetPosition() method for the odometer takes in 3 parameters, not 2.
+The first parameter is the heading of the robot in Rotation2D (a data structure).
+The second parameter is the robot's position according to an array of 4 swerve modules.
+The third parameter is the location of the robot determined by the odometer.
+```
