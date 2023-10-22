@@ -6,13 +6,17 @@ package frc.robot.commands;
 
 import java.util.List;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -42,6 +46,42 @@ public class SwerveAutoTrajectory extends SequentialCommandGroup {
             trajectoryConfig
         );
 
+        // PID controller to correct errors in the trajectory
+        PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
+        PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
+        // PID controller for angle with constraints on max speed and acceleration (defined in Constants.java)
+        ProfiledPIDController thetaController = new ProfiledPIDController(
+            AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+        // Since the robot's heading is from -180 to 180 degrees, we will make the angular controller continuous to handle that
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+        // Constructs a new SwerveControllerCommand that follows trajectory
+        // Ctrl + click "SwerveControllerCommand" class for more information
+        SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
+            // Generated trajectory (above in code)
+            trajectory,
+            // Gets robot coordinates
+            swerveSubsystem::getPose,
+            // Chassis kinematics
+            DriveConstants.kDriveKinematics,
+            // PID controllers
+            xController,
+            yController,
+            thetaController,
+            // Sets swerve module states
+            swerveSubsystem::setModuleStates,
+            // Required swerve subsystem
+            swerveSubsystem);
+
+        new SequentialCommandGroup(
+            // Resets odometer before autonomous command starts
+            // By resetting the odometer, the trajectory moves to where the robot is
+            new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())),
+            swerveControllerCommand,
+            // Stops swerve modules after autonomous command finishes
+            new InstantCommand(() -> swerveSubsystem.stopModules()));
+
     }
+        
 
 }

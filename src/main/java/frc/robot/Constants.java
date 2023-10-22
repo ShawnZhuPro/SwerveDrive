@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -71,13 +72,13 @@ public final class Constants {
     public static final int kFrontRightTurningMotorPort = 0;
     public static final int kBackRightTurningMotorPort = 0;
 
-    // Flags to reverse the turning encoder direction on swerve modules
+    // Flags if the turning encoder direction on swerve modules are reversed
     public static final boolean kFrontLeftTurningEncoderReversed = true;
     public static final boolean kBackLeftTurningEncoderReversed = true;
     public static final boolean kFrontRightTurningEncoderReversed = true;
     public static final boolean kBackRightTurningEncoderReversed = true;
 
-    // Flags to reverse the drive encoder direction on swerve modules
+    // Flags if the drive encoder direction on swerve modules are reversed
     public static final boolean kFrontLeftDriveEncoderReversed = true;
     public static final boolean kBackLeftDriveEncoderReversed = true;
     public static final boolean kFrontRightDriveEncoderReversed = true;
@@ -89,7 +90,7 @@ public final class Constants {
     public static final int kFrontRightDriveAbsoluteEncoderPort = 0;
     public static final int kBackRightDriveAbsoluteEncoderPort = 0;
 
-    // Flags to reverse the absolute drive encoder direction on swerve modules
+    // Flags if the absolute drive encoder direction on swerve modules are reversed
     public static final boolean kFrontLeftDriveAbsoluteEncoderReversed = true;
     public static final boolean kBackLeftDriveAbsoluteEncoderReversed = true;
     public static final boolean kFrontRightDriveAbsoluteEncoderReversed = true;
@@ -116,12 +117,30 @@ public final class Constants {
     public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = kPhysicalMaxAngularSpeedRadiansPerSecond / 4;
   }
 
-  public static final class AutoConstants{
+  public static final class AutoConstants {
+    // Maximum linear speed for autonomous control 
     public static final double kMaxSpeedMetersPerSecond = DriveConstants.kPhysicalMaxSpeedMetersPerSecond / 4;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 0;  // Add code comment to determine value
+    
+    // Maximum linear acceleration for autonomous control (change this value if auto is funky)
+    public static final double kMaxAccelerationMetersPerSecondSquared = DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond;
+    
+    // Maximum angular speed for autonomous control
+    public static final double kMaxAngularSpeedRadiansPerSecond = DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond / 10;
+    
+    // Maximum angular acceleration for autonomous control 
+    public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4;
 
+    // Proportional constants for controllers (adjust as needed)
+    public static final double kPXController = 0;
+    public static final double kPYController = 0;
+    public static final double kPThetaController = 0;
+    
+    // Constraints that limit the max speed and accelerations of the angular PID controller
+    public static final TrapezoidProfile.Constraints kThetaControllerConstraints = 
+      new TrapezoidProfile.Constraints(
+            kMaxAngularSpeedRadiansPerSecond,
+            kMaxAngularAccelerationRadiansPerSecondSquared);
   }
-
 
   // Constants for operator interface (OI) settings
   public static final class OIConstants {
