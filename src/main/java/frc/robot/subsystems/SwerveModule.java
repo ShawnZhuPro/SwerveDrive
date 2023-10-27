@@ -29,7 +29,7 @@ public class SwerveModule {
 
     // We access these encoders that are built into the motors
     private final RelativeEncoder driveEncoder;
-    private final RelativeEncoder turningEncoder;
+    private final RelativeEncoder turningEncoder;  // Switch to CANCoder
 
     // PID controller for the motor that controls the angle
     private final PIDController turningPIDController;
