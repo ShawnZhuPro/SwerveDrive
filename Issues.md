@@ -97,6 +97,8 @@ Wrong code:
     // This gives us the % of a full rotation
     double angle = absoluteEncoder.getVoltage() / RobotController.getVoltage5V();
 ...
+}
+...
     // Debug info about the state of the specific swerve module
     SmartDashboard.putString("Swerve[" + absoluteEncoder.getChannel() + "] state", state.toString());
 ```
@@ -108,6 +110,8 @@ Fixed code:
     // absoluteEncoder's voltage reading / voltage supply 
     // This gives us the % of a full rotation
     double angle = absoluteEncoder.getBusVoltage() / RobotController.getVoltage5V();
+...
+}
 ...
     // Debug info about the state of the specific swerve module
     SmartDashboard.putString("Swerve[" + absoluteEncoder.getDeviceID() + "] state", state.toString());
