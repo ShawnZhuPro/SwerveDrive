@@ -84,3 +84,36 @@ The first parameter is the heading of the robot in Rotation2D (a data structure)
 The second parameter is the robot's position according to an array of 4 swerve modules.
 The third parameter is the location of the robot determined by the odometer.
 ```
+
+<br>
+
+### 4) We use CANCoder for the absoluteEncoder rather than AnalogInput
+Wrong code:
+```java
+    private final AnalogInput absoluteEncoder;
+...
+  public double getAbsoluteEncoderRad(){
+    // absoluteEncoder's voltage reading / voltage supply 
+    // This gives us the % of a full rotation
+    double angle = absoluteEncoder.getVoltage() / RobotController.getVoltage5V();
+...
+    // Debug info about the state of the specific swerve module
+    SmartDashboard.putString("Swerve[" + absoluteEncoder.getChannel() + "] state", state.toString());
+```
+Fixed code:
+```java
+    private final CANCoder absoluteEncoder;
+...
+  public double getAbsoluteEncoderRad(){
+    // absoluteEncoder's voltage reading / voltage supply 
+    // This gives us the % of a full rotation
+    double angle = absoluteEncoder.getBusVoltage() / RobotController.getVoltage5V();
+...
+    // Debug info about the state of the specific swerve module
+    SmartDashboard.putString("Swerve[" + absoluteEncoder.getDeviceID() + "] state", state.toString());
+```
+Explanation:
+```txt
+We are using CANCoder because it provides higher precision in position measurement than AnalogInput
+The fixes are just using functions that are related to the CANCoder class instead of the AnalogInput class
+```
