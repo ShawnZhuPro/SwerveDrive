@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
@@ -14,6 +15,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 
@@ -34,9 +36,8 @@ public class SwerveModule {
 
     /* Absolute encoder connected to the turning motor (in between the 2 big neo motors)
      * This is necessary so the robot always knows where the robot is facing
-     * We use the AnalogInput class because the absolute encoders are connected to the analog in ports on the RoboRIO 
-     * Make sure to import the one from WPI, not REV */ 
-    private final AnalogInput absoluteEncoder;
+     * In other teams' code, this may be named "angleEncoder" */ 
+    private final CANCoder absoluteEncoder;
     // Stores if the absoluteEncoder is reversed
     private final boolean absoluteEncoderReversed;
     /* Offset position of absoluteEncoder
@@ -51,7 +52,7 @@ public class SwerveModule {
     // Create absolute encoder
     this.absoluteEncoderOffsetRad = absoluteEncoderOffset;
     this.absoluteEncoderReversed = absoluteEncoderReversed;
-    absoluteEncoder = new AnalogInput(absoluteEncoderID);
+    absoluteEncoder = new CANCoder(absoluteEncoderID);
 
     // Create motors
     driveMotor = new CANSparkMax(driveMotorID, MotorType.kBrushless);
@@ -104,7 +105,7 @@ public class SwerveModule {
   public double getAbsoluteEncoderRad(){
     // absoluteEncoder's voltage reading / voltage supply 
     // This gives us the % of a full rotation
-    double angle = absoluteEncoder.getVoltage() / RobotController.getVoltage5V();
+    double angle = absoluteEncoder.getBusVoltage() / RobotController.getVoltage5V();
     // Convert to radians
     angle *= 2.0 * Math.PI;
     // Actual angle by subtracting the offset
@@ -151,8 +152,8 @@ public class SwerveModule {
     // Calculates the output for the current position (1st argument) and the angle setpoint (2nd argument)
     turningMotor.set(turningPIDController.calculate(getTurningPosition(), state.angle.getRadians()));
 
-    // Debug info
-    SmartDashboard.putString("Swerve[" + absoluteEncoder.getChannel() + "] state", state.toString());
+    // Debug info about the state of the specific swerve module
+    SmartDashboard.putString("Swerve[" + absoluteEncoder.getDeviceID() + "] state", state.toString());
   }
 
   // Sets drive and angle speeds to 0 (stops the module)
