@@ -11,6 +11,6 @@
 @@ This has in-depth code comments that can help ANYONE understand what's happening! @@
 ```
 
-[**View Known Issues (BUGS.md)**](https://github.com/ShawnZhuPro/SwerveDrive/blob/master/BUGS.md)
+[**View Known Issues (BUGS.md)**](https://github.com/ShawnZhuPro/SwerveDrive/blob/master/Issues.md)
 
 
